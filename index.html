@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pracownia Gier Szkoleniowych – Integracja zespołów przez gry</title>
+<meta name="description" content="Od 2004 roku tworzymy gry szkoleniowe i symulacje, które budują zaangażowane, zintegrowane zespoły. Pionierzy polskiego rynku gier szkoleniowych.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #FFFFFF;
+    --surface:  #F5F3EF;
+    --surface2: #ECEAE4;
+    --navy:     #1C1B3A;
+    --navy2:    #2E2C55;
+    --accent:   #E8521A;
+    --accent2:  #F07240;
+    --green:    #3A7D5E;
+    --text:     #1C1B3A;
+    --muted:    #6B6A80;
+    --border:   rgba(28,27,58,0.10);
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 5%;
+    background: rgba(255,255,255,0.93);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--font-head); font-weight: 800;
+    font-size: 1.05rem; color: var(--navy); text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { color: var(--muted); font-size: 0.88rem; text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--navy); }
+  .nav-cta {
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 6px; padding: 0.55rem 1.3rem;
+    font-family: var(--font-body); font-size: 0.88rem; font-weight: 500;
+    cursor: pointer; text-decoration: none; transition: background 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: var(--accent2); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 9rem 5% 5rem;
+    position: relative; overflow: hidden;
+    background: var(--navy);
+  }
+  .hero-pattern {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+  }
+  .hero-blob {
+    position: absolute; width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(232,82,26,0.2) 0%, transparent 65%);
+    top: -150px; right: -50px; pointer-events: none;
+  }
+  .hero-blob2 {
+    position: absolute; width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(58,125,94,0.12) 0%, transparent 65%);
+    bottom: 50px; left: 5%; pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(232,82,26,0.15); border: 1px solid rgba(232,82,26,0.35);
+    border-radius: 100px; padding: 0.4rem 1rem;
+    font-size: 0.78rem; color: var(--accent2);
+    margin-bottom: 2rem; width: fit-content;
+  }
+  .hero-badge::before {
+    content: ''; display: block; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent); animation: blink 2s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  h1 {
+    font-family: var(--font-head); font-size: clamp(2.6rem, 6.5vw, 5.5rem);
+    font-weight: 800; line-height: 1.07; letter-spacing: -0.03em;
+    color: #fff; max-width: 780px; margin-bottom: 1.5rem;
+  }
+  h1 em { font-style: normal; color: var(--accent); }
+  .hero-sub {
+    font-size: 1.05rem; color: rgba(255,255,255,0.58);
+    max-width: 500px; margin-bottom: 2.5rem; font-weight: 300; line-height: 1.85;
+  }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 8px; padding: 0.9rem 2rem;
+    font-size: 0.95rem; font-family: var(--font-body); font-weight: 500;
+    cursor: pointer; text-decoration: none; transition: background 0.2s, transform 0.15s; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-2px); }
+  .btn-ghost {
+    background: rgba(255,255,255,0.06); color: #fff;
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0.9rem 2rem;
+    font-size: 0.95rem; font-family: var(--font-body); font-weight: 400;
+    cursor: pointer; text-decoration: none; transition: background 0.2s; display: inline-block;
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+  .btn-outline {
+    background: transparent; color: var(--navy);
+    border: 1.5px solid var(--navy); border-radius: 8px; padding: 0.85rem 2rem;
+    font-size: 0.92rem; font-family: var(--font-body); font-weight: 500;
+    cursor: pointer; text-decoration: none; transition: all 0.2s; display: inline-block;
+  }
+  .btn-outline:hover { background: var(--navy); color: #fff; }
+  .hero-stats {
+    display: flex; gap: 3rem; margin-top: 5rem;
+    border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2.5rem; flex-wrap: wrap;
+  }
+  .stat-num {
+    font-family: var(--font-head); font-size: 2.2rem; font-weight: 800;
+    color: var(--accent); line-height: 1; margin-bottom: 0.2rem;
+  }
+  .stat-label { font-size: 0.78rem; color: rgba(255,255,255,0.4); font-weight: 300; }
+
+  /* SECTIONS */
+  section { padding: 6rem 5%; }
+  .section-tag {
+    display: inline-block; font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.9rem;
+  }
+  h2 {
+    font-family: var(--font-head); font-size: clamp(1.7rem, 3.5vw, 2.8rem);
+    font-weight: 700; letter-spacing: -0.025em; line-height: 1.15;
+    margin-bottom: 1.25rem; color: var(--navy);
+  }
+  .lead { font-size: 1rem; color: var(--muted); max-width: 580px; line-height: 1.85; font-weight: 300; }
+
+  /* ABOUT */
+  .about { background: var(--surface); }
+  .about-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+  .about-visual { position: relative; height: 420px; }
+  .about-card {
+    position: absolute; background: #fff;
+    border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem;
+    box-shadow: 0 4px 24px rgba(28,27,58,0.07);
+  }
+  .about-card.c1 { top: 0; left: 0; right: 18%; }
+  .about-card.c2 { bottom: 0; right: 0; left: 22%; }
+  .about-card.c3 {
+    top: 50%; transform: translateY(-50%);
+    left: 22%; right: 22%;
+    background: var(--accent); border-color: transparent; text-align: center;
+  }
+  .card-icon { font-size: 1.4rem; margin-bottom: 0.6rem; }
+  .card-title { font-family: var(--font-head); font-weight: 600; font-size: 0.9rem; margin-bottom: 0.35rem; color: var(--navy); }
+  .card-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+  .about-card.c3 .card-title { color: #fff; }
+  .about-card.c3 .card-desc { color: rgba(255,255,255,0.75); }
+  .about-year { font-family: var(--font-head); font-size: 2.8rem; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 0.2rem; }
+
+  /* GAMES */
+  .games-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; gap: 2rem; flex-wrap: wrap; }
+  .games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(295px, 1fr)); gap: 1.25rem; }
+  .game-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.75rem;
+    transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .game-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.3s;
+  }
+  .game-card:hover { border-color: rgba(232,82,26,0.25); transform: translateY(-4px); box-shadow: 0 8px 32px rgba(28,27,58,0.1); }
+  .game-card:hover::before { transform: scaleX(1); }
+  .game-type {
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--accent); background: rgba(232,82,26,0.08);
+    border: 1px solid rgba(232,82,26,0.18); border-radius: 4px;
+    padding: 0.2rem 0.6rem; display: inline-block; margin-bottom: 1.1rem;
+  }
+  .game-type.online { color: var(--green); background: rgba(58,125,94,0.08); border-color: rgba(58,125,94,0.2); }
+  .game-name { font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; color: var(--navy); margin-bottom: 0.45rem; }
+  .game-tags { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.1rem; }
+  .game-desc { font-size: 0.87rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; }
+  .game-meta { display: flex; gap: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem; font-size: 0.76rem; color: var(--muted); }
+
+  /* EVENTS */
+  .events { background: var(--surface); }
+  .events-list { display: flex; flex-direction: column; gap: 1rem; margin-top: 2.5rem; }
+  .event-item {
+    display: flex; align-items: center; gap: 2rem;
+    background: #fff; border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.5rem 2rem; transition: border-color 0.2s, box-shadow 0.2s; flex-wrap: wrap;
+  }
+  .event-item:hover { border-color: rgba(232,82,26,0.25); box-shadow: 0 4px 20px rgba(28,27,58,0.07); }
+  .event-date { font-family: var(--font-head); font-size: 1.15rem; font-weight: 800; color: var(--accent); min-width: 70px; }
+  .event-name { font-weight: 500; font-size: 1rem; color: var(--navy); margin-bottom: 0.2rem; }
+  .event-loc { font-size: 0.8rem; color: var(--muted); }
+  .event-btn {
+    background: transparent; border: 1.5px solid var(--accent); border-radius: 6px;
+    color: var(--accent); padding: 0.5rem 1.25rem;
+    font-size: 0.84rem; font-family: var(--font-body); font-weight: 500;
+    cursor: pointer; text-decoration: none; transition: background 0.2s, color 0.2s; white-space: nowrap;
+  }
+  .event-btn:hover { background: var(--accent); color: #fff; }
+
+  /* FINDER */
+  .finder { background: var(--navy); text-align: center; }
+  .finder h2 { color: #fff; max-width: 520px; margin: 0 auto 1rem; }
+  .finder .lead { color: rgba(255,255,255,0.48); margin: 0 auto 2.5rem; }
+
+  /* TESTIMONIALS */
+  .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+  .testimonial {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem; position: relative;
+  }
+  .testimonial::before {
+    content: '"'; position: absolute; top: 1rem; right: 1.5rem;
+    font-family: var(--font-head); font-size: 5rem; font-weight: 800;
+    color: rgba(232,82,26,0.12); line-height: 1;
+  }
+  .testimonial-text { font-size: 0.95rem; line-height: 1.8; color: var(--muted); margin-bottom: 1.5rem; font-style: italic; font-weight: 300; }
+  .testimonial-author { font-weight: 600; font-size: 0.9rem; color: var(--navy); margin-bottom: 0.2rem; }
+  .testimonial-role { font-size: 0.78rem; color: var(--accent); }
+
+  /* CONTACT */
+  .contact { background: var(--navy); }
+  .contact h2 { color: #fff; }
+  .contact .section-tag { color: var(--accent2); }
+  .contact-inner { display: grid; grid-template-columns: 1fr 1.4fr; gap: 5rem; align-items: start; }
+  .contact-sub { font-size: 0.92rem; color: rgba(255,255,255,0.48); font-weight: 300; line-height: 1.8; margin-bottom: 2.5rem; }
+  .contact-detail { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.4rem; }
+  .contact-icon {
+    width: 38px; height: 38px; background: rgba(232,82,26,0.12);
+    border: 1px solid rgba(232,82,26,0.25); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
+  }
+  .contact-label { font-size: 0.7rem; color: rgba(255,255,255,0.33); margin-bottom: 0.15rem; font-weight: 300; text-transform: uppercase; letter-spacing: 0.07em; }
+  .contact-val { font-size: 0.92rem; color: rgba(255,255,255,0.82); }
+  .form-row { margin-bottom: 1.1rem; }
+  .form-row label { display: block; font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-bottom: 0.45rem; font-weight: 300; }
+  .form-row input, .form-row textarea {
+    width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px; padding: 0.8rem 1rem; color: #fff;
+    font-family: var(--font-body); font-size: 0.9rem; outline: none; transition: border-color 0.2s;
+  }
+  .form-row input::placeholder, .form-row textarea::placeholder { color: rgba(255,255,255,0.22); }
+  .form-row input:focus, .form-row textarea:focus { border-color: rgba(232,82,26,0.5); }
+  .form-row textarea { min-height: 110px; resize: vertical; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-submit {
+    width: 100%; background: var(--accent); color: #fff; border: none; border-radius: 8px;
+    padding: 0.95rem; font-family: var(--font-body); font-size: 0.95rem;
+    font-weight: 500; cursor: pointer; transition: background 0.2s;
+  }
+  .form-submit:hover { background: var(--accent2); }
+
+  /* FOOTER */
+  footer {
+    background: #13122E; border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 2rem 5%; display: flex; align-items: center;
+    justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  }
+  .footer-logo { font-family: var(--font-head); font-weight: 800; font-size: 0.95rem; color: #fff; text-decoration: none; }
+  .footer-logo span { color: var(--accent); }
+  .footer-copy { font-size: 0.78rem; color: rgba(255,255,255,0.28); font-weight: 300; }
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a { font-size: 0.78rem; color: rgba(255,255,255,0.38); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: rgba(255,255,255,0.7); }
+
+  /* ANIMATION */
+  .fade-up { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 5%; }
+    .nav-links { display: none; }
+    .about-inner, .contact-inner { grid-template-columns: 1fr; }
+    .about-visual { display: none; }
+    .form-grid { grid-template-columns: 1fr; }
+    h1 { font-size: 2.4rem; }
+    .hero-stats { gap: 1.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">PGS<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#o-nas">O nas</a></li>
+    <li><a href="#gry">Gry</a></li>
+    <li><a href="#wydarzenia">Wydarzenia</a></li>
+    <li><a href="#kontakt">Kontakt</a></li>
+  </ul>
+  <a href="#kontakt" class="nav-cta">Zapytaj o ofertę</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-pattern"></div>
+  <div class="hero-blob"></div>
+  <div class="hero-blob2"></div>
+  <div class="hero-badge">Pionierzy polskiego rynku gier szkoleniowych od 2004 r.</div>
+  <h1>Zintegruj swój<br>zespół przez <em>grę.</em></h1>
+  <p class="hero-sub">W Pracowni Gier Szkoleniowych łączymy współpracę z zabawą. Nasze autorskie gry wzmacniają komunikację, budują zaangażowanie i tworzą niezapomniane doświadczenia teamowe.</p>
+  <div class="hero-actions">
+    <a href="#gry" class="btn-primary">Poznaj nasze gry</a>
+    <a href="#kontakt" class="btn-ghost">Skontaktuj się</a>
+  </div>
+  <div class="hero-stats">
+    <div><div class="stat-num">20+</div><div class="stat-label">Lat doświadczenia</div></div>
+    <div><div class="stat-num">500+</div><div class="stat-label">Zrealizowanych projektów</div></div>
+    <div><div class="stat-num">3</div><div class="stat-label">Rynki: PL, EU, US</div></div>
+    <div><div class="stat-num">1000</div><div class="stat-label">Uczestników w jednej sesji</div></div>
+  </div>
+</section>
+
+<section class="about" id="o-nas">
+  <div class="about-inner">
+    <div class="about-text fade-up">
+      <span class="section-tag">O nas</span>
+      <h2>Poznaj Pracownię<br>Gier Szkoleniowych</h2>
+      <p class="lead" style="margin-bottom:1.25rem;">Od 2004 roku kierujemy się misją wyzwalania zmian w ludziach, zespołach i organizacjach za pomocą gier szkoleniowych i symulacji.</p>
+      <p style="font-size:0.93rem;color:var(--muted);font-weight:300;line-height:1.85;margin-bottom:1.75rem;">Powstaliśmy jako pionierzy na polskim rynku. Przetarliśmy szlaki na rynku europejskim i amerykańskim — zdobywając uznanie w sektorze prywatnym, publicznym i pozarządowym.</p>
+      <a href="https://pracowniagier.com/o-nas/" class="btn-outline" target="_blank">Dowiedz się więcej</a>
+    </div>
+    <div class="about-visual fade-up">
+      <div class="about-card c1">
+        <div class="card-icon">🎯</div>
+        <div class="card-title">Integracja przez działanie</div>
+        <div class="card-desc">Gry angażują uczestników i tworzą wspólne doświadczenia, które naprawdę zbliżają ludzi.</div>
+      </div>
+      <div class="about-card c3">
+        <div class="about-year">2004</div>
+        <div style="font-size:0.75rem;color:rgba(255,255,255,0.72);">Rok założenia</div>
+      </div>
+      <div class="about-card c2">
+        <div class="card-icon">🌍</div>
+        <div class="card-title">Zasięg globalny</div>
+        <div class="card-desc">Nasze gry działają w organizacjach na 3 kontynentach — PL, EU i USA.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="gry">
+  <div class="games-header fade-up">
+    <div>
+      <span class="section-tag">Nasze gry</span>
+      <h2>Znajdź grę idealną<br>dla swojego zespołu</h2>
+    </div>
+    <p class="lead" style="font-size:0.95rem;max-width:360px;">Od 6 do 1000 uczestników — mamy grę na każdą skalę i potrzebę organizacji.</p>
+  </div>
+  <div class="games-grid">
+    <div class="game-card fade-up">
+      <span class="game-type">Gra stacjonarna</span>
+      <div class="game-name">Galeria perspektyw</div>
+      <div class="game-tags">➡️ współpraca · strategia · przełamywanie silosów</div>
+      <div class="game-desc">Odtwórzcie historyczny witraż łącząc rozproszone informacje i pracując zespołowo. Idealna do nauki o komunikacji i zarządzaniu projektem.</div>
+      <div class="game-meta"><span>👥 16–100 os.</span><span>⏱ 3 godz.</span></div>
+    </div>
+    <div class="game-card fade-up">
+      <span class="game-type">Gra stacjonarna</span>
+      <div class="game-name">Olimpiada współpracy</div>
+      <div class="game-tags">➡️ współpraca · komunikacja · innowacja · strategia</div>
+      <div class="game-desc">Pasjonująca kombinacja zabawy i nauki przez klasyczne gry komunikacyjne, które wzmacniają efektywną współpracę w zespole.</div>
+      <div class="game-meta"><span>👥 6–100 os.</span><span>⏱ 4 godz.</span></div>
+    </div>
+    <div class="game-card fade-up">
+      <span class="game-type online">Gra online</span>
+      <div class="game-name">Kolekcjonerzy</div>
+      <div class="game-tags">➡️ współpraca · rywalizacja · zaufanie</div>
+      <div class="game-desc">Dynamiczna rozrywka o dużym potencjale integracyjnym. Wartościowa refleksja nad zarządzaniem kontaktami i efektywną współpracą w sprzedaży.</div>
+      <div class="game-meta"><span>👥 18–500 os.</span><span>⏱ 2 godz.</span></div>
+    </div>
+    <div class="game-card fade-up">
+      <span class="game-type">Gra stacjonarna</span>
+      <div class="game-name">Honey Rush</div>
+      <div class="game-tags">➡️ współpraca · komunikacja · zmiana</div>
+      <div class="game-desc">Emocjonująca przygoda w świecie pszczół, gdzie uczestnicy uczą się o organizacji i strategii biznesowej. Idealna do integracji dużych grup.</div>
+      <div class="game-meta"><span>👥 od 60 os.</span><span>⏱ 2,5–3 godz.</span></div>
+    </div>
+    <div class="game-card fade-up">
+      <span class="game-type">Gra stacjonarna</span>
+      <div class="game-name">The Tree of Life</div>
+      <div class="game-tags">➡️ innowacja · różnorodność · strategia</div>
+      <div class="game-desc">Gra symulacyjna o osiąganiu celów, współpracy i ciągłej zmianie. Zaprojektowana z myślą o integracji i rozwoju bardzo dużych grup.</div>
+      <div class="game-meta"><span>👥 120–1000 os.</span><span>⏱ 3–4 godz.</span></div>
+    </div>
+    <div class="game-card fade-up">
+      <span class="game-type">Gra stacjonarna</span>
+      <div class="game-name">Cosmopolis</div>
+      <div class="game-tags">➡️ zmiana · strategia · przełamywanie silosów</div>
+      <div class="game-desc">Przeniesie Was do metropolii jutra — nowoczesnych miast, w których nowoczesne technologie i dobro mieszkańców stoją na pierwszym miejscu.</div>
+      <div class="game-meta"><span>👥 20–120 os.</span><span>⏱ 2,5–3 godz.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="events" id="wydarzenia">
+  <div class="fade-up">
+    <span class="section-tag">Nadchodzące wydarzenia</span>
+    <h2>Dołącz do nas na żywo</h2>
+    <p class="lead">Doskonała okazja do doświadczenia metody gier, zdobycia nowych umiejętności i nawiązania wartościowych kontaktów.</p>
+  </div>
+  <div class="events-list">
+    <div class="event-item fade-up">
+      <div class="event-date">16.04</div>
+      <div style="flex:1">
+        <div class="event-name">Budowanie kultury współodpowiedzialności w zespole</div>
+        <div class="event-loc">📍 Spotkanie stacjonarne · 2026</div>
+      </div>
+      <a href="https://pracowniagier.com/wydarzenie/budowanie-kultury-wspolodpowiedzialnosci-2/" class="event-btn" target="_blank">Zapisz się</a>
+    </div>
+    <div class="event-item fade-up">
+      <div class="event-date">28.04</div>
+      <div style="flex:1">
+        <div class="event-name">FLOW w pracy – Poznań</div>
+        <div class="event-loc">📍 Spotkanie stacjonarne · Poznań · 2026</div>
+      </div>
+      <a href="https://pracowniagier.com/wydarzenie/flow-w-pracy-poznan/" class="event-btn" target="_blank">Zapisz się</a>
+    </div>
+  </div>
+</section>
+
+<section class="finder">
+  <div class="fade-up">
+    <span class="section-tag" style="color:var(--accent2);">Dopasowanie</span>
+    <h2>Nie wiesz, od czego zacząć?</h2>
+    <p class="lead">Odpowiedz na kilka pytań i poznaj grę, która pomoże Ci zbudować zaangażowany zespół — niezależnie od wyzwania.</p>
+    <a href="https://pracowniagier.com/gry-i-symulacje/znajdz-gre/" class="btn-primary" target="_blank">Znajdź grę dla swojego zespołu</a>
+  </div>
+</section>
+
+<section>
+  <div class="fade-up">
+    <span class="section-tag">Opinie klientów</span>
+    <h2>Zaufali nam</h2>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial fade-up">
+      <p class="testimonial-text">Genialny sposób na integrację oraz budowanie zaufania i współpracy w zespole — zabawa i inspiracja gwarantowane! Polecam bardzo!</p>
+      <div class="testimonial-author">Dominika Derewicz</div>
+      <div class="testimonial-role">The Power of Empathy</div>
+    </div>
+    <div class="testimonial fade-up">
+      <p class="testimonial-text">Polecam grę jako narzędzie do budowania zespołów szczególnie w dużych organizacjach, ponieważ w czasie kilku godzin tworzy się naturalna sytuacja edukacyjna do wymiany doświadczeń i dobrych praktyk.</p>
+      <div class="testimonial-author">Grażyna Pławska</div>
+      <div class="testimonial-role">Head of HR, NIK</div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="kontakt">
+  <div class="contact-inner">
+    <div class="fade-up">
+      <span class="section-tag">Kontakt</span>
+      <h2>Porozmawiajmy<br>o Twoim zespole</h2>
+      <p class="contact-sub">Będziemy szczęśliwi mogąc odpowiedzieć na wszystkie Twoje pytania. Skontaktujemy się z Tobą najszybciej jak to możliwe.</p>
+      <div class="contact-detail">
+        <div class="contact-icon">📍</div>
+        <div><div class="contact-label">Adres</div><div class="contact-val">ul. Puławska 39/2, 02-508 Warszawa</div></div>
+      </div>
+      <div class="contact-detail">
+        <div class="contact-icon">📞</div>
+        <div><div class="contact-label">Telefon</div><div class="contact-val">+48 22 468 85 52</div></div>
+      </div>
+      <div class="contact-detail">
+        <div class="contact-icon">✉️</div>
+        <div><div class="contact-label">Email</div><div class="contact-val">biuro@pracowniagier.com</div></div>
+      </div>
+    </div>
+    <div class="fade-up">
+      <div class="form-grid">
+        <div class="form-row"><label>Imię i nazwisko</label><input type="text" placeholder="Jan Kowalski"></div>
+        <div class="form-row"><label>Nazwa firmy</label><input type="text" placeholder="Firma sp. z o.o."></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row"><label>Email</label><input type="email" placeholder="jan@firma.pl"></div>
+        <div class="form-row"><label>Telefon</label><input type="tel" placeholder="+48 600 000 000"></div>
+      </div>
+      <div class="form-row"><label>Liczba uczestników</label><input type="text" placeholder="np. 30–80 osób"></div>
+      <div class="form-row"><label>Wiadomość</label><textarea placeholder="Opisz krótko potrzeby swojego zespołu..."></textarea></div>
+      <button class="form-submit" type="button">Wyślij wiadomość →</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a href="#" class="footer-logo">PGS<span>.</span></a>
+  <p class="footer-copy">© 2025 Pracownia Gier Szkoleniowych sp. z o.o. · Warszawa</p>
+  <div class="footer-links">
+    <a href="https://pracowniagier.com/polityka-prywatnosci/" target="_blank">Polityka prywatności</a>
+    <a href="https://pracowniagier.com/o-nas/" target="_blank">O nas</a>
+    <a href="https://pracowniagier.com/blog/" target="_blank">Blog</a>
+  </div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
